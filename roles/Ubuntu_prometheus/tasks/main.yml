@@ -1,0 +1,29 @@
+---
+
+- name: Installing prerequisites in Ubuntu
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - apt-transport-https
+    - software-properties-common
+  when: ansible_distribution == "Ubuntu"
+
+- name: Install Prometheus on Ubuntu
+  apt:
+    name: prometheus
+    state: present
+  when: ansible_distribution == "Ubuntu"
+
+- name: Update Prometheus on Ubuntu
+  apt:
+    name: prometheus
+    state: latest
+  when: ansible_distribution == "Ubuntu"
+
+
+- name: Starting/restarting prometheus
+  service:
+    name: prometheus
+    state: restarted
+    enabled: true

@@ -1,0 +1,36 @@
+---
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: epel-release update/download
+    package:
+      name:
+        - epel-release
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (CentOS)
+    tags: always
+    package:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: install updates (Ubuntu)
+    tags: always
+    apt:
+      update_cache: yes
+      state: latest
+    when: ansible_distribution == "Ubuntu"
+
+- hosts: Ubuntu_prometheus
+  become: true
+  roles:
+    - Ubuntu_prometheus
+
+- hosts: CentOS_prometheus
+  become: true
+  roles:
+    - role: CentOS_prometheus
+      source: https://github.com/prometheus/prometheus/releases/download/v2.43.0/prometheus-2.43.0.linux-amd64.tar.gz
+
